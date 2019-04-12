@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" version="1.6" group="flexicontent_fields" method="upgrade">
+	<name>FLEXIcontent - Add to calendar link</name>
+	<author>Yannick Berges</author>
+	<creationDate>April 2019</creationDate>
+	<copyright>Copyright (C) 2019 Berges Yannick</copyright>
+	<license>GNU/GPL v2</license>
+	<authorEmail>Yannick@com3elles.com</authorEmail>
+	<authorUrl>www.com3elles.com</authorUrl>
+	<version>1.0</version>
+	<documentation url="http://www.flexicontent.org/documentation/faq.html" title="FLEXI_ABOUT" modal="1" icon="info" />
+	<description>FLEXI_FIELD_ADD_TO_CALENDAR</description>
+	<files>
+		<filename plugin="add_to_calendar">add_to_calendar.php</filename>
+		<filename>index.html</filename>
+		<folder>tmpl</folder>
+	</files>
+
+	<config>
+	<fields name="attribs">
+
+		<!--fieldset name="standard" hidden="true">
+		</fieldset-->
+
+		<fieldset name="group-add_to_calendar-fields" hidden="true" icon_class="icon-link" label="FLEXI_PROPERTIES_AS_FIELDS" addfieldpath="/administrator/components/com_flexicontent/elements">
+
+			<field name="" type="separator" default="FLEXI_STORE_PROPERTIES_AS_FIELDS" level="level2" />
+			<field name="" type="separator" default="FLEXI_STORE_PROPERTIES_AS_FIELDS_DESC" class="alert alert-info" level="level4" />
+
+			<field name="field_title_event" type="fields" default="" custom_prompt="FLEXI_SELECT" custom_value="" field_type="text" label="FLEXI_ADD_TO_CALENDAR_TITLE_EVENT" description="" class="use_select2_lib"/>
+			<field name="field_start_date_event" type="fields" default="" custom_prompt="FLEXI_SELECT" custom_value="" field_type="date" label="FLEXI_ADD_TO_CALENDAR_START_DATE_EVENT" description="" class="use_select2_lib"/>
+			<field name="field_end_date_event" type="fields" default="" custom_prompt="FLEXI_SELECT" custom_value="" field_type="date" label="FLEXI_ADD_TO_CALENDAR_END_DATE_EVENT" description="" class="use_select2_lib"/>
+			<field name="field_description_event" type="fields" default="" custom_prompt="FLEXI_SELECT" custom_value="" field_type="text" label="FLEXI_ADD_TO_CALENDAR_DESCRIPTION_EVENT" description="" class="use_select2_lib"/>
+			<field name="field_location_event" type="fields" default="" custom_prompt="FLEXI_SELECT" custom_value="" field_type="addressint" label="FLEXI_ADD_TO_CALENDAR_LOCATION_EVENT" description="" class="use_select2_lib"/>
+		</fieldset>
+		<field name="" type="separator" default="" level="tabset_close" box_type="1" />
+
+		<fieldset name="group-add_to_calendar-viewing" hidden="true" icon_class="icon-screen" label="FLEXI_FIELD_VIEWING" addfieldpath="/administrator/components/com_flexicontent/elements">
+		<field name="" type="separator" default="FLEXI_LAYOUT" description="" level="level2" />
+			<field name="viewlayout" type="fcfilelist" default="" label="FLEXI_FIELD_SELECT_VIEW_LAYOUT" description="FLEXI_FIELD_SELECT_VIEW_LAYOUT_DESC" directory="plugins/flexicontent_fields/add_to_calendar/tmpl/" filter="value*" exclude="" stripext="1" stripprefix="value_" hide_none="1" hide_default="1" />
+
+		<field name="" type="separator" default="" level="tabset_close" box_type="1" />
+
+		</fieldset>
+	</fields>
+	</config>
+
+	<languages>
+		<language tag="en-GB">en-GB.plg_flexicontent_fields_text.ini</language>
+	</languages>
+
+</extension>
