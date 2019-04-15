@@ -95,7 +95,7 @@ class plgFlexicontent_fieldsAdd_to_calendar extends FCField
 		 * Create field's HTML display for item form
 		 */
 
-$field->html = array();
+		$field->html = array();
 		// Do not convert the array to string if field is in a group
 		if ($use_ingroup);
 
@@ -133,7 +133,7 @@ $field->html = array();
 		$newpost[$new]['start_date_event'] = $Sdate;
 		$newpost[$new]['end_date_event'] = $Edate;
 		$newpost[$new]['description_event'] = $desc;
-		$newpost[$new]['lacation_event'] = $location;
+		$newpost[$new]['location_event'] = $location;
 
 		$new++;
 	}
@@ -183,6 +183,80 @@ function onBeforeDeleteField(&$field, &$item) {
 
 		// Use the custom field values, if these were provided
 		$values = $values !== null ? $values : $this->field->value;
+		
+		$title_event = ''; //field set for title
+		$start_date_event='';//JHtml::date($datefield, 'Y-m-d H:i:s');
+		$end_date_event ='';//field date set for date need to check format
+		$tzname = JFactory::getUser()->getParam('timezone'); // need to checkk convertion code
+		$id_event = $item_id // return uniq id for apple device
+		$description_event='';// field set for description event
+		$location_event=''; //field set adress => only text
+		$duration_event=''; // set dureation for yahoo event
+		
+		// generate google url calendar
+		$urlGoogle = 'https://calendar.google.com/calendar/render?action=TEMPLATE';
+        $dateTimeFormat = $link->allDay ? 'Ymd' : "Ymd\THis";
+        $urlGoogle .= '&text='.urlencode($title_event);
+        $urlGoogle .= '&dates='.$start_date_event.'/'.$end_date_event;
+        $urlGoogle .= '&ctz='.$tzname;
+        if ($link->description) {
+            $url .= '&details='.urlencode($description_event);
+        }
+        if ($link->address) {
+            $url .= '&location='.urlencode($location_event);
+        }
+        $urlGoogle .= '&sprop=&sprop=name:';
+        return $urlGoogle;
+		
+		// generate ics url for apple device
+		        $url = [
+            'BEGIN:VCALENDAR',
+            'VERSION:2.0',
+            'BEGIN:VEVENT',
+            'UID:'.$id_event,
+            'SUMMARY:'.$title_event,
+        ];
+        if ($link->allDay) {
+            $dateTimeFormat = 'Ymd';
+            $url[] = 'DTSTART:'.$start_date_event;
+            $url[] = 'DURATION:P1D';
+        } else {
+            $dateTimeFormat = "e:Ymd\THis";
+            $url[] = 'DTSTART;TZID='.$start_date_event;
+            $url[] = 'DTEND;TZID='.$end_date_event;
+        }
+        if ($link->description) {
+            $url[] = 'DESCRIPTION:'.$description_event;
+        }
+        if ($link->address) {
+            $url[] = 'LOCATION:'.$location_event;
+        }
+        $url[] = 'END:VEVENT';
+        $url[] = 'END:VCALENDAR';
+        $redirectLink = implode('%0d%0a', $url);
+        $urlIcs = 'data:text/calendar;charset=utf8,'.$redirectLink;
+		return $urlIcs;
+		
+		
+		// generate live url calendar
+		$urlLive  = 'https://bay02.calendar.live.com/calendar/calendar.aspx?rru=addevent';
+		$urlLive. = '&dtstart='.$start_date_event;
+		$urlLive. = '&dtend='.$end_date_event;
+		$urlLive. = '&summary='.$title_event;
+		$urlLive. = '&location='.$location_event;
+		$urlLive. =	'&description='.$description_event;
+		return $urlLive;
+		
+		// generate yahoo url calendar
+		$urlYahoo  = 'http://calendar.yahoo.com/?v=60&view=d&type=20';
+		$urlYahoo. = '&title=' .$title_event;
+		$urlYahoo. = '&st=' .$start_date_event;
+		$urlYahoo. = '&dur=' .$duration_event;
+		$urlYahoo. = '&desc=' .$description_event;
+		$urlYahoo. = '&in_loc=' .$location_event;
+		return $urlYahoo;
+    }
+    }
 
 		// Parse field values
 		$this->values = $this->parseValues($values);
