@@ -46,7 +46,7 @@
 	</config>
 
 	<languages>
-		<language tag="en-GB">en-GB.plg_flexicontent_fields_text.ini</language>
+		<language tag="en-GB">en-GB.plg_flexicontent_fields_add_to_calendar.ini</language>
 	</languages>
 
 </extension>
