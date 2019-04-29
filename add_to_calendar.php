@@ -53,17 +53,6 @@ class plgFlexicontent_fieldsAdd_to_calendar extends FCField
 		$form_font_icons = $cparams->get('form_font_icons', 1);
 		$font_icon_class = $form_font_icons ? ' fcfont-icon' : '';
 
-
-		// ***
-		// *** Number of values
-		// ***
-		$max_values   = $use_ingroup ? 0 : (int) $field->parameters->get('max_values', 0);
-		$required     = (int) $field->parameters->get('required', 0);
-
-		// Classes for marking field required
-		$required_class = $required ? ' required' : '';
-
-
 		// Set field and item objects
 		$this->setField($field);
 		$this->setItem($item);
@@ -143,13 +132,13 @@ class plgFlexicontent_fieldsAdd_to_calendar extends FCField
 	$props_to_fields = array('title_event', 'start_date_event', 'end_date_event', 'description_event', 'location event');
 	$_fields = array();
 	$byIds = FlexicontentFields::indexFieldsByIds($item->fields, $item);
-	dump ($byIds, 'fieldid');
+	//var_dump ($byIds, 'fieldid');
 	foreach($post as $i => $v)
 	{
 		foreach($props_to_fields as $propname)
 		{
 			$to_fieldid = $field->parameters->get('field_'.$propname);
-				dump ($to_fieldid, 'fieldid');
+				//var_dump ($to_fieldid, 'fieldid');
 			if ( $to_fieldid && isset($byIds[$to_fieldid]) )
 			{
 				$to_fieldname = $byIds[$to_fieldid]->name;
@@ -158,7 +147,7 @@ class plgFlexicontent_fieldsAdd_to_calendar extends FCField
 		}
 		$post[$i] = serialize($v);
 	}
-	dump ($post, 'post');
+	//var_dump ($post, 'post');
 	}
 
 	// Method to take any actions/cleanups needed after field's values are saved into the DB
@@ -183,34 +172,38 @@ function onBeforeDeleteField(&$field, &$item) {
 
 		// Use the custom field values, if these were provided
 		$values = $values !== null ? $values : $this->field->value;
-		
+
 		$title_event = ''; //field set for title
-		$start_date_event='';//JHtml::date($datefield, 'Y-m-d H:i:s');
-		$end_date_event ='';//field date set for date need to check format
+		$start_date_event = '';//JHtml::date($datefield, 'Y-m-d H:i:s');
+		$end_date_event = '';//field date set for date need to check format
 		$tzname = JFactory::getUser()->getParam('timezone'); // need to checkk convertion code
-		$id_event = $item_id // return uniq id for apple device
-		$description_event='';// field set for description event
-		$location_event=''; //field set adress => only text
-		$duration_event=''; // set dureation for yahoo event
-		
+		$id_event = $item_id; // return uniq id for apple device
+		$description_event = 'test';// field set for description event
+		$location_event = 'test'; //field set adress => only text
+		$duration_event = 'test'; // set dureation for yahoo event
+
+		function GetGoogleURL()
+		{
 		// generate google url calendar
-		$urlGoogle = 'https://calendar.google.com/calendar/render?action=TEMPLATE';
-        $dateTimeFormat = $link->allDay ? 'Ymd' : "Ymd\THis";
-        $urlGoogle .= '&text='.urlencode($title_event);
-        $urlGoogle .= '&dates='.$start_date_event.'/'.$end_date_event;
-        $urlGoogle .= '&ctz='.$tzname;
+			$urlGoogle = 'https://calendar.google.com/calendar/render?action=TEMPLATE';
+    	$dateTimeFormat = $link->allDay ? 'Ymd' : "Ymd\THis";
+    	$urlGoogle .= '&text='.urlencode($title_event);
+    	$urlGoogle .= '&dates='.$start_date_event.'/'.$end_date_event;
+    	$urlGoogle .= '&ctz='.$tzname;
         if ($link->description) {
             $url .= '&details='.urlencode($description_event);
         }
         if ($link->address) {
             $url .= '&location='.urlencode($location_event);
         }
-        $urlGoogle .= '&sprop=&sprop=name:';
-        return $urlGoogle;
-		
+      $urlGoogle .= '&sprop=&sprop=name:';
+      return $urlGoogle;
+		}
+		function GetIcsURL()
+		{
 		// generate ics url for apple device
-		        $url = [
-            'BEGIN:VCALENDAR',
+		   $url = [
+        'BEGIN:VCALENDAR',
             'VERSION:2.0',
             'BEGIN:VEVENT',
             'UID:'.$id_event,
@@ -236,26 +229,30 @@ function onBeforeDeleteField(&$field, &$item) {
         $redirectLink = implode('%0d%0a', $url);
         $urlIcs = 'data:text/calendar;charset=utf8,'.$redirectLink;
 		return $urlIcs;
-		
-		
+	}
+
+
+	function GetLiveURL()
+	{
 		// generate live url calendar
 		$urlLive  = 'https://bay02.calendar.live.com/calendar/calendar.aspx?rru=addevent';
-		$urlLive. = '&dtstart='.$start_date_event;
-		$urlLive. = '&dtend='.$end_date_event;
-		$urlLive. = '&summary='.$title_event;
-		$urlLive. = '&location='.$location_event;
-		$urlLive. =	'&description='.$description_event;
+		$urlLive .= '&dtstart=' .$start_date_event;
+		$urlLive .= '&dtend='.$end_date_event;
+		$urlLive .= '&summary='.$title_event;
+		$urlLive .= '&location='.$location_event;
+		$urlLive .=	'&description='.$description_event;
 		return $urlLive;
-		
+	}
+	function GetYahooURL()
+	{
 		// generate yahoo url calendar
 		$urlYahoo  = 'http://calendar.yahoo.com/?v=60&view=d&type=20';
-		$urlYahoo. = '&title=' .$title_event;
-		$urlYahoo. = '&st=' .$start_date_event;
-		$urlYahoo. = '&dur=' .$duration_event;
-		$urlYahoo. = '&desc=' .$description_event;
-		$urlYahoo. = '&in_loc=' .$location_event;
+		$urlYahoo .= '&title='.$title_event;
+		$urlYahoo .= '&st='.$start_date_event;
+		$urlYahoo .= '&dur='.$duration_event;
+		$urlYahoo .= '&desc='.$description_event;
+		$urlYahoo .= '&in_loc='.$location_event;
 		return $urlYahoo;
-    }
     }
 
 		// Parse field values
